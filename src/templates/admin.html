@@ -1,0 +1,64 @@
+{% extends './baseInterna.html' %}
+{% block titulo %}Admin Menu{% endblock %}
+{% block miCSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/baseInterna.css') }}">
+{% endblock %}
+{% block cuerpo %}
+    <div id="storeSubTitle">Bienvenido/a, {{ current_user.fullname }}</div>
+
+    <!-- Main Content -->
+  <div class="container text-center mt-4" id="mainContent">
+    <div id="storeTitle">ALMACENES DE COLCHONES</div>
+    <div id="storeSubTitle">La experiencia de descanso que te mereces.</div>
+
+    <div class="d-flex w-100">
+        <!-- Left Content -->
+        <div class="flex-fill" style="max-width: 50%;">
+            <div class="p-4">
+                <h2 id="ofertash2">NUEVAS OFERTAS</h2>
+                <p id="ofertasp">Conocelas dentro de nuestra tienda.</p>
+            </div>
+            <button class="btn btn-secondary my-3" id="goToStoreButton" >Ir a la Tienda <span>&rarr;</span></button>
+      </div>
+
+        <!-- This div is for additional content or can be left empty for spacing 
+        <div class="flex-fill"></div> -->
+
+        <!-- Product Carousel -->
+        <div class="flex-fill" style="max-width: 50%;">
+          <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="/static/images/colchon1.jpg" class="d-block w-100" alt="Product Image">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Colchon Matrimonial</h5>
+                  <p>Desde $5,000 MXN</p>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="/static/images/colchon.jpg" class="d-block w-100" alt="Product Image">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Colchon Queen Size</h5>
+                  <p>Desde $8,000 MXN</p>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <script>
+    const storeButton = document.getElementById('goToStoreButton');
+    storeButton.addEventListener('click', function() {
+        window.location.href = '/catalogue';  // Redirects the user to the catalogue page
+    });
+  </script>
+
+{% endblock %}

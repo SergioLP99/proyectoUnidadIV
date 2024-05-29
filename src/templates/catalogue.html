@@ -1,0 +1,218 @@
+{% extends './baseInterna.html' %}
+{% block titulo %}Catalogo{% endblock %}
+{% block miCSS %}{% endblock %}
+{% block cuerpo %}
+  <!-- Main Content -->
+  <div class="container text-center mt-4" id="mainContent">
+    <div id="storeTitle">Catalogo de productos</div>
+    {% if current_user.usertype == 1 %}
+        <button class="btn btn-secondary my-3 admin-content" id="newProductBtn" data-bs-toggle="modal" data-bs-target="#productModal">Registrar nuevo producto</button>
+
+          <!-- Product Registration Modal -->
+        <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="productModalLabel">Nuevo Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                <form action="/addProduct" method="POST" id="productForm" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="hidden" id="productId" name="productId">
+                    <div class="mb-3">
+                    <label for="productName" class="form-label">Nombre del producto</label>
+                    <input type="text" class="form-control" id="productName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                    <label for="productSize" class="form-label">Descripcion</label>
+                    <input type="text" class="form-control" id="descript" name="description" required>
+                    </div>
+                    <div class="mb-3">
+                    <label for="productPrice" class="form-label">Precio</label>
+                    <input type="number" class="form-control" id="productPrice" name="price" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productImage" class="form-label">Imagen del producto</label>
+                        <input type="file" class="form-control" id="productImage" name="image" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Producto</button>
+                </form>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Product Editing Modal -->
+        <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProductModalLabel">Editar Producto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/editProduct" method="POST" id="editProductForm" enctype="multipart/form-data">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" id="editProductId" name="productId">
+                            <div class="mb-3">
+                                <label for="editProductName" class="form-label">Nombre del producto</label>
+                                <input type="text" class="form-control" id="editProductName" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editProductDescription" class="form-label">Descripcion</label>
+                                <input type="text" class="form-control" id="editProductDescription" name="description" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editProductPrice" class="form-label">Precio</label>
+                                <input type="number" class="form-control" id="editProductPrice" name="price" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editProductImage" class="form-label">Imagen del producto</label>
+                                <img src="" alt="Current Product Image" id="currentEditProductImage" style="width: 100px; display: block;">
+                                <input type="file" class="form-control" id="editProductImage" name="image" accept="image/*">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Actualizar Producto</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+   
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteProductModalLabel">Confirmar eliminacion.</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Favor de confirmar antes de eliminar este producto.</p>
+                        <form action="/deleteProduct" method="POST" id="deleteProductForm">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" id="deleteProductId" name="id">
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+
+
+    <!-- Make sure this div correctly wraps cards in a row -->
+    <div class="row" id="productGrid">
+        {% for product in products %}
+            <div class="col-sm-6 col-lg-4">
+                <div class="card mb-4 shadow-sm">
+                    <img src="{{ url_for('static', filename='images/' ~ product.image) }}" alt="{{ product.name }}" class="card-img-top" style="height: 300px; object-fit: cover;" onclick="showFullImage('{{ url_for('static', filename='images/' ~ product.image) }}')" alt="{{ product.name }})">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <p class="card-text">${{ product.price }}</p>
+                        <p class="card-text">ID del producto: AC-00{{ product.id }}</p>
+                        {% if current_user.usertype == 1 %}
+                            <button class="btn btn-danger admin-content" onclick="openDeleteProductModal({{ product.id }})">Eliminar</button>
+                            <button class="btn btn-secondary admin-content" onclick="openEditProductModal({{ product.id }})">Editar producto</button>
+                        {% endif %}
+                        <button class="btn btn-primary" onclick="addToCart({{ product.id }})">Agregar al carrito</button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="fullSizeImage" src="" class="img-fluid" alt="Product">
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    function openEditProductModal(productId) {
+        fetch(`/getProduct/${productId}`)
+            .then(response => response.json())
+            .then(product => {
+                if (product.error) {
+                    alert(product.error);
+                } else {
+                    document.getElementById('editProductId').value = product.id;
+                    document.getElementById('editProductName').value = product.name;
+                    document.getElementById('editProductDescription').value = product.description;
+                    document.getElementById('editProductPrice').value = product.price;
+                    document.getElementById('currentEditProductImage').src = '/static/images/' + product.image;
+                    console.log("THIS IS THE CURRENT IMAGE????" + product.image)
+                    
+                    var editProductModal = new bootstrap.Modal(document.getElementById('editProductModal'));
+                    editProductModal.show();
+                }
+            })
+            .catch(error => console.error('Error fetching product:', error));
+    }
+
+
+    function openDeleteProductModal(productId) {
+        document.getElementById('deleteProductId').value = productId;
+        var deleteProductModal = new bootstrap.Modal(document.getElementById('deleteProductModal'));
+        deleteProductModal.show();
+    }
+
+    // Function to show full-size image in a modal
+    function showFullImage(imagePath) {
+        const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+        const modalImage = document.getElementById('fullSizeImage');
+        modalImage.src = imagePath;  // Set the source of the image to the clicked image
+        imageModal.show();
+    }
+
+    function getCSRFToken() {
+        return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    }
+    
+    function addToCart(productId) {
+        fetch(`/addToCart/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()  // Ensure you handle CSRF tokens if needed
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Producto agregado al carrito exitosamente.');
+            } else {
+                alert('Hubo un error agregando este articulo a su carrito. Por favor, intentelo mas tarde.');
+            }
+        })
+        .catch(error => console.error('Error adding product to cart:', error));
+    }
+    
+
+</script>
+{% endblock %}

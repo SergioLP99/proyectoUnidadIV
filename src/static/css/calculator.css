@@ -1,0 +1,19 @@
+.calculator {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+.calculator button {
+    height: 60px;
+    font-size: 1.5rem;
+}
+.calculator .display {
+    grid-column: span 4;
+    height: 60px;
+    text-align: right;
+    padding: 10px;
+    font-size: 2rem;
+    background: #e9ecef;
+    border: none;
+    border-radius: 5px;
+}
