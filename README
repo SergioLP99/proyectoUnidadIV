@@ -1,0 +1,56 @@
+# Aplicación de Comercio Electrónico
+
+Esta es una aplicación de comercio electrónico simple desarrollada con Flask. La aplicación permite a los usuarios buscar productos, añadirlos al carrito de compras y realizar operaciones básicas de administración, como agregar y editar productos. Los administradores tienen acceso a funcionalidades adicionales.
+
+## Características
+
+- **Autenticación de Usuarios**: Ingreso y registro de usuarios.
+- **Gestión de Productos**: Agregar, editar y eliminar productos (solo para administradores).
+- **Carrito de Compras**: Añadir productos al carrito, ver el carrito y eliminar productos del carrito.
+- **Búsqueda de Productos**: Buscar productos por nombre o descripción.
+- **Calculadora**: Calculadora simple integrada en la interfaz de usuario.
+
+## Requisitos
+
+- Python 3.12.2
+- Flask
+- MySQL
+
+## Instalación
+
+Sigue estos pasos para instalar y ejecutar la aplicación en tu computadora:
+
+1. Clona el Repositorio
+git clone https://github.com/SergioLP99/proyectoUnidadIV.git
+cd nombre-del-repositorio
+
+2. Crea y Activa un Entorno Virtual
+python -m venv venv
+
+En Windows:
+venv\Scripts\activate
+
+En macOS y Linux:
+source venv/bin/activate
+
+5. Configura las Variables de Entorno
+Dentro del archivo config.py, ingrese el equivalente de los siguentes campos segun su sistema.
+
+FLASK_APP=app.py
+FLASK_ENV=development
+SECRET_KEY=tu_clave_secreta
+MYSQL_USER=tu_usuario_de_mysql
+MYSQL_PASSWORD=tu_contraseña_de_mysql
+MYSQL_DB="store" ##Es importante dejar este campo tal cual, debido a que este es el nombre de la BD utilizada por la app.
+MYSQL_HOST=localhost
+
+5. Ejecuta la Aplicación
+python app.py
+
+6. Accede a la Aplicación
+
+Abre tu navegador web y navega a http://127.0.0.1:5000.
+Uso
+
+    Inicio de Sesión: Accede a la página de inicio de sesión e ingresa tus credenciales. 
+    Buscar Productos: Utiliza la barra de búsqueda en la navegación para encontrar productos.
